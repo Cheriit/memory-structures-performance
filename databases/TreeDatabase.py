@@ -45,7 +45,40 @@ class TreeDatabase(Generic[T], Database[T]):
     def delete(self, key: int) -> bool:
         """Class method that deletes entry under the specific key. In case of non-existing key value, it returns
         false."""
-        pass
+        if len(self.items.search(key)) > 0:
+            return False
+        self.items = delete_from_tree(self, key)
 
     def __str__(self):
-        return "TreeDatabase"
+        self.items.inorder()
+
+
+def min_value_node(node):
+    current = node
+    while current.left is not None:
+        current = current.left
+
+    return current
+
+
+def delete_from_tree(root, key):
+    if root is None:
+        return root
+    if key < root.key:
+        root.left = delete_from_tree(root.left, key)
+    elif key > root.key:
+        root.right = delete_from_tree(root.right, key)
+    else:
+        if root.left is None:
+            temp = root.right
+            root = None
+            return temp
+        elif root.right is None:
+            temp = root.left
+            root = None
+            return temp
+
+        temp = min_value_node(root.right)
+        root.key = temp.key
+        root.right = delete_from_tree(root.right, temp.key)
+    return root

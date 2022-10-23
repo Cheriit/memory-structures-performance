@@ -1,7 +1,7 @@
 class Node:
-    def __init__(self, key, value):
-        self.left = None
-        self.right = None
+    def __init__(self, key, value, left=None, right=None):
+        self.left = left
+        self.right = right
         self.key = key
         self.value = value
 
@@ -39,3 +39,10 @@ class Node:
             return
         if self.right:
             self.right.update(key, value)
+
+    def inorder(self):
+        if self.left:
+            self.left.inorder()
+        print(self.key, self.value)
+        if self.right:
+            self.right.inorder()
