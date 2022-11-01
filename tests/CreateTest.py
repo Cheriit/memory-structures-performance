@@ -12,9 +12,10 @@ class CreateTest(Test):
 
     @staticmethod
     @timer
-    def perform_scenario(database: Database[Person]) -> None:
+    def perform_scenario(database: Database[Person], size=30001) -> None:
         """Class method that performs create scenario"""
-        pass
+        for counter in range(1, size):
+            database.add(counter, Person.mock_person())
 
     def __str__(self):
         return "create"
