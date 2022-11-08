@@ -17,6 +17,7 @@ def run_tests():
     run_test(UpdateTest(), databases)
     run_test(MixtureTest(), databases)
     run_test(DeleteTest(), databases)
+    run_test(CreateTest(), databases)
 
 
 if __name__ == '__main__':
