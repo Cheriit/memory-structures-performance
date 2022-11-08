@@ -54,4 +54,4 @@ class ListDatabase(Generic[T], Database[T]):
         return False
 
     def __str__(self):
-        return "ListDatabase"
+        return '    '.join(['[' + str(x[0]) + ']: ' + str(x[1]) for x in self.items])
