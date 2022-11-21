@@ -14,7 +14,8 @@ class DeleteTest(Test):
     @timer
     def perform_scenario(database: Database[Person]) -> None:
         """Class method that performs delete scenario"""
-        pass
+        for counter in range(1, 15001):
+            database.delete(counter)
 
     def __str__(self):
         return "delete"
