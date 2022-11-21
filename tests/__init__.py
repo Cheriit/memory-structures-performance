@@ -1,4 +1,5 @@
 from .Test import Test
+from .AppendTest import AppendTest
 from .CreateTest import CreateTest
 from .ReadTest import ReadTest
 from .ReadRangeTest import ReadRangeTest

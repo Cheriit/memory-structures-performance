@@ -14,10 +14,10 @@ class ReadTest(Test):
 
     @staticmethod
     @timer
-    def perform_scenario(database: Database[Person], index_range=range(1, 30001)) -> None:
+    def perform_scenario(database: Database[Person], index_range=range(1, Test.size)) -> None:
         """Class method that performs read scenario"""
         for _ in index_range:
-            database.get(random.randint(1, 30000))
+            database.get(random.randint(1, Test.size - 1))
 
     def __str__(self):
         return "read"

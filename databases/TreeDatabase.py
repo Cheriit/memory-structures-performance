@@ -50,7 +50,7 @@ class TreeDatabase(Generic[T], Database[T]):
         self.items = delete_from_tree(self, key)
 
     def __str__(self):
-        self.items.inorder()
+        return "TreeDatabase"
 
 
 def min_value_node(node):

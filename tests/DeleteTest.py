@@ -1,3 +1,5 @@
+from math import floor
+
 from commons import timer
 from data import Person
 from databases import Database
@@ -14,7 +16,7 @@ class DeleteTest(Test):
     @timer
     def perform_scenario(database: Database[Person]) -> None:
         """Class method that performs delete scenario"""
-        for counter in range(1, 15001):
+        for counter in range(1, floor(Test.size/2)):
             database.delete(counter)
 
     def __str__(self):
