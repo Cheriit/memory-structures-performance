@@ -1,0 +1,45 @@
+---
+title: "Results"
+author: "Filip Szóstak"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(ggplot2)
+library(plotly)
+```
+
+
+```{r init, echo=FALSE}
+draw_chart <- function(operation) {
+  data <- read.csv(paste("out/", operation, ".csv", sep=""), header=FALSE, col.names=c("database", "time"))
+  df <- data %>%
+    mutate(database=factor(database), time=time/1000) %>%
+    group_by(database) %>%
+    summarise(time=mean(time))
+  
+  return(
+    ggplot(df, aes(x=database, y=time, color=database, fill=database)) + 
+      geom_col() + 
+      labs(x="Database type", color="Database type", fillz="Database type", y="Operation time", title=paste("Memory structure effeciency for", operation, "operation."))
+   )
+    
+}
+```
+
+
+```{r create}
+ggplotly(draw_chart("create"))
+```
+```{r read}
+ggplotly(draw_chart("read"))
+```
+```{r read_range}
+ggplotly(draw_chart("read_range"))
+```
+```{r update}
+ggplotly(draw_chart("update"))
+```
