@@ -18,11 +18,18 @@ class TreeDatabase(Generic[T], Database[T]):
             else:
                 self.items.insert(value[0], value[1])
 
-    def add(self, key: int, value: T) -> bool:
+    def check(self):
+        if depth(self.items.left) - depth(self.items.right) > 1:
+            self.items = rotation_left(self.items)
+        elif depth(self.items.right) - depth(self.items.left) > 1:
+            self.items = rotation_right(self.items)
+
+    def add(self, key: int, value: T, left=None, right=None) -> bool:
         """Class method that adds value to the structure. In case of the already existing key, it returns false."""
         if len(self.items.search(key)) > 0:
             return False
-        self.items.insert(key, value)
+        self.items.insert(key, value, left, right)
+        self.check()
 
     def get(self, key: int) -> T:
         """Class method that returns value under the specific key."""
@@ -38,47 +45,50 @@ class TreeDatabase(Generic[T], Database[T]):
     def update(self, key: int, new_value: T) -> bool:
         """Class method that updates (overwrites) entry in database. In case of non-existing key value it returns
         false."""
-        if len(self.items.search(key)) > 0:
+        if len(self.items.search(key)) == 0:
             return False
         self.items.update(key, new_value)
 
     def delete(self, key: int) -> bool:
         """Class method that deletes entry under the specific key. In case of non-existing key value, it returns
         false."""
-        if len(self.items.search(key)) > 0:
+        if len(self.items.search(key)) == 0:
             return False
-        self.items = delete_from_tree(self, key)
+        self.items.delete(key, None, self)
+        self.check()
 
     def __str__(self):
         return "TreeDatabase"
 
 
-def min_value_node(node):
-    current = node
-    while current.left is not None:
-        current = current.left
-
-    return current
-
-
-def delete_from_tree(root, key):
-    if root is None:
-        return root
-    if key < root.key:
-        root.left = delete_from_tree(root.left, key)
-    elif key > root.key:
-        root.right = delete_from_tree(root.right, key)
+def depth(node):
+    if node is None:
+        return 0
     else:
-        if root.left is None:
-            temp = root.right
-            root = None
-            return temp
-        elif root.right is None:
-            temp = root.left
-            root = None
-            return temp
+        left_depth = depth(node.left)
+        right_depth = depth(node.right)
 
-        temp = min_value_node(root.right)
-        root.key = temp.key
-        root.right = delete_from_tree(root.right, temp.key)
-    return root
+        if left_depth > right_depth:
+            return left_depth+1
+        else:
+            return right_depth+1
+
+
+def rotation_right(node):
+    y = node.left
+    t = y.right
+
+    y.right = node
+    node.left = t
+
+    return y
+
+
+def rotation_left(node):
+    y = node.right
+    t = y.left
+
+    y.left = node
+    node.right = t
+
+    return y
