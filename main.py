@@ -1,4 +1,4 @@
-from tests import Test, CreateTest, ReadTest, ReadRangeTest, UpdateTest, MixtureTest, DeleteTest
+from tests import Test, AppendTest, CreateTest, ReadTest, ReadRangeTest, UpdateTest, MixtureTest, DeleteTest
 from databases import Database, ListDatabase, DictionaryDatabase, TreeDatabase
 from data import Person
 
@@ -17,6 +17,7 @@ def run_tests():
     run_test(UpdateTest(), databases)
     run_test(MixtureTest(), databases)
     run_test(DeleteTest(), databases)
+    run_test(AppendTest(), databases)
 
 
 if __name__ == '__main__':

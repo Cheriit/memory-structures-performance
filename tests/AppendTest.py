@@ -4,9 +4,9 @@ from databases import Database
 from tests import Test
 
 
-class CreateTest(Test):
+class AppendTest(Test):
     """
-    Abstract class that performs create test scenario for all the given databases and adds them at the end of the
+    Abstract class that performs appends test scenario for all the given databases and adds them at the end of the
     given file.
     """
 
@@ -18,4 +18,4 @@ class CreateTest(Test):
             database.add(counter, Person.mock_person())
 
     def __str__(self):
-        return "create"
+        return "append"

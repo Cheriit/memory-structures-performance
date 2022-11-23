@@ -1,3 +1,5 @@
+import random
+
 from commons import timer
 from data import Person
 from databases import Database
@@ -14,7 +16,8 @@ class UpdateTest(Test):
     @timer
     def perform_scenario(database: Database[Person]) -> None:
         """Class method that performs update scenario"""
-        pass
+        for _ in range(1, Test.size):
+            database.update(random.randint(1, Test.size - 1), Person.mock_person())
 
     def __str__(self):
         return "update"

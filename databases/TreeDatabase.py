@@ -58,7 +58,7 @@ class TreeDatabase(Generic[T], Database[T]):
         self.check()
 
     def __str__(self):
-        self.items.inorder()
+        return "TreeDatabase"
 
 
 def depth(node):

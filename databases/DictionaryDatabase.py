@@ -47,4 +47,4 @@ class DictionaryDatabase(Generic[T], Database[T]):
         self.items.pop(key)
 
     def __str__(self):
-        return str(self.items)
+        return "DictionaryDatabase"
