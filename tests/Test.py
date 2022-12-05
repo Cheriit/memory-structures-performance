@@ -10,7 +10,7 @@ class Test(ABC):
     given file.
     """
     # size: int = 30001
-    size: int = 3001
+    size: int = 5001
 
     @staticmethod
     @abstractmethod
