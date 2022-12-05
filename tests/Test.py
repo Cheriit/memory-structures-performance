@@ -19,10 +19,8 @@ class Test(ABC):
         pass
 
     @timer
-    def run(self, result_file_name: str, databases: list[Database], param: int = None):
+    def run(self, result_file_name: str, databases: list[Database]):
         """Test runner that adds content to the file in the CSV format."""
-        if param is not None:
-            self.size = param
         results = []
         for database in databases:
             results.append(f'{str(database)},{str(self.perform_scenario(database))}')
