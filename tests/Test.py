@@ -9,7 +9,8 @@ class Test(ABC):
     Abstract class that performs given test scenario for all the given databases and adds them at the end of the
     given file.
     """
-    size: int = 30001
+    # size: int = 30001
+    size: int = 3001
 
     @staticmethod
     @abstractmethod

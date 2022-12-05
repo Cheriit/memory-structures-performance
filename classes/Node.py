@@ -5,70 +5,73 @@ class Node:
         self.key = key
         self.value = value
 
-    def insert(self, key, value, left=None, right=None):
-        if self.key:
-            if key < self.key:
-                if self.left is None:
-                    self.left = Node(key, value, left, right)
-                else:
-                    self.left.insert(key, value, left, right)
-            elif key > self.key:
-                if self.right is None:
-                    self.right = Node(key, value, left, right)
-                else:
-                    self.right.insert(key, value, left, right)
 
-    def search(self, key, found=None):
-        if found is None:
-            found = []
-        if self.left:
-            self.left.search(key, found)
-        if self.key == key:
-            found.append([self.key, self.value])
-        if self.right:
-            self.right.search(key, found)
-        return found
+def insert(node, key, value):
+    if node is None:
+        return Node(key, value)
 
-    def inorder(self):
-        if self.left:
-            self.left.inorder()
-        print(self.key, self.value)
-        if self.right:
-            self.right.inorder()
+    if key < node.key:
+        node.left = insert(node.left, key, value)
+    else:
+        node.right = insert(node.right, key, value)
 
-    def inorder_string(self):
-        if self.left:
-            self.left.inorder_string()
-        print("key: {}, value: {}".format(self.key, self.value))
-        if self.right:
-            self.right.inorder_string()
+    return node
 
-    def update(self, key, value):
-        if self.key > key and self.left:
-            self.left.update(key, value)
-        if self.key == key:
-            self.value = value
-            return
-        if self.key < key and self.right:
-            self.right.update(key, value)
 
-    def delete(self, key, prev, root):
-        if self.key > key and self.left:
-            self.left.delete(key, self, root)
-        if self.key == key:
-            temp_right = None
-            temp_left = None
-            if self.right:
-                temp_right = Node(self.right.key, self.right.value, self.right.left, self.right.right)
-            if self.left:
-                temp_left = Node(self.left.key, self.left.value, self.left.left, self.left.right)
-            if prev.left.key == key:
-                prev.left = None
-            elif prev.right.key == key:
-                prev.right = None
-            if temp_right:
-                root.add(temp_right.key, temp_right.value, temp_right.left, temp_right.right)
-            if temp_left:
-                root.add(temp_left.key, temp_left.value, temp_left.left, temp_left.right)
-        if self.key < key and self.right:
-            self.right.delete(key, self, root)
+def minValueNode(node):
+    current = node
+
+    while current.left is not None:
+        current = current.left
+
+    return current
+
+
+def deleteNode(root, key):
+    if root is None:
+        return root
+
+    if key < root.key:
+        root.left = deleteNode(root.left, key)
+    elif key > root.key:
+        root.right = deleteNode(root.right, key)
+    else:
+        if root.left is None:
+            temp = root.right
+            root = None
+            return temp
+        elif root.right is None:
+            temp = root.left
+            root = None
+            return temp
+
+        temp = minValueNode(root.right)
+        root.key = temp.key
+        root.right = deleteNode(root.right, temp.key)
+    return root
+
+
+def inorder(root):
+    if root is not None:
+        inorder(root.left)
+        print(root.key, root.value)
+        inorder(root.right)
+
+
+def search(root, key):
+    if root is None or root.key == key:
+        return root
+    if root.key < key:
+        return search(root.right, key)
+    return search(root.left, key)
+
+
+def update(root, key, new_value):
+    if root is None:
+        return root
+    if root.key == key:
+        root.value = new_value
+        return root
+    if root.key < key:
+        return update(root.right, key, new_value)
+    return update(root.left, key, new_value)
