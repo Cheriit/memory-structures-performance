@@ -20,9 +20,9 @@ databases: list[Database] = [
 ]
 
 
-def run_test(test: Test, test_database, size=None) -> None:
+def run_test(test: Test, test_database) -> None:
     print(f'Running {str(test)} test.')
-    duration = test.run(f'out/{str(test)}.csv', test_database, size)
+    duration = test.run(f'out/{str(test)}.csv', test_database)
     print(f'Test took: {str(duration)} seconds')
 
 
