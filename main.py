@@ -1,3 +1,4 @@
+import random
 from typing import Type
 
 from tests import Test, CreateTest, ReadTest, ReadRangeTest, UpdateTest, MixtureTest, DeleteTest
@@ -44,6 +45,7 @@ def run_tests(run_database: Database, param: int):
 
 
 if __name__ == '__main__':
+    random.seed(1918)
     for database in databases:
         for param in params_list:
             run_tests(database([x for x in enumerate(Person.mock_people(param))]), param)
