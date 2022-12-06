@@ -29,9 +29,9 @@ class MixtureTest(Test):
         '''query_mix(database, 24000, 3000)
         query_mix(database, 18000, 6000)
         query_mix(database, 12000, 9000)'''
-        query_mix(database, 24000, 300)
-        query_mix(database, 18000, 600)
-        query_mix(database, 12000, 900)
+        query_mix(database, 300)
+        query_mix(database, 600)
+        query_mix(database, 900)
 
     def __str__(self):
         return "mixture"
