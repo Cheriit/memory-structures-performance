@@ -26,9 +26,12 @@ class MixtureTest(Test):
     @timer
     def perform_scenario(database: Database[Person]) -> None:
         """Class method that performs mixture scenario"""
-        query_mix(database, 24000, 3000)
+        '''query_mix(database, 24000, 3000)
         query_mix(database, 18000, 6000)
-        query_mix(database, 12000, 9000)
+        query_mix(database, 12000, 9000)'''
+        query_mix(database, 24000, 300)
+        query_mix(database, 18000, 600)
+        query_mix(database, 12000, 900)
 
     def __str__(self):
         return "mixture"

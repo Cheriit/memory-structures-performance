@@ -1,6 +1,7 @@
 from databases import Database
 from typing import TypeVar, Generic
-from classes import Node
+from classes.Node import insert, deleteNode, update, search
+import sys
 
 T = TypeVar('T')
 
@@ -11,55 +12,53 @@ class TreeDatabase(Generic[T], Database[T]):
     """
 
     def __init__(self, values: list[tuple[int, T]]) -> None:
-        self.items = None
         self.size = 0
+        sys.setrecursionlimit(5000)
+        self.root = None
         for value in values:
-            self.size += 1
-            if self.items is None:
-                self.items = Node(value[0], value[1])
-            else:
-                self.items.insert(value[0], value[1])
+            self.root = insert(self.root, value[0], value[1])
 
     def check(self):
-        if depth(self.items.left) - depth(self.items.right) > 1:
-            self.items = rotation_left(self.items)
-        elif depth(self.items.right) - depth(self.items.left) > 1:
-            self.items = rotation_right(self.items)
+        if depth(self.root.left) - depth(self.root.right) > 1:
+            self.root = rotation_right(self.root)
+        elif depth(self.root.right) - depth(self.root.left) > 1:
+            self.root = rotation_left(self.root)
 
-    def add(self, key: int, value: T, left=None, right=None) -> bool:
+    def add(self, key: int, value: T) -> bool:
         """Class method that adds value to the structure. In case of the already existing key, it returns false."""
-        if len(self.items.search(key)) > 0:
+        if search(self.root, key) is not None:
             return False
-        self.items.insert(key, value, left, right)
+        self.root = insert(self.root, key, value)
         self.size += 1
         self.check()
 
     def get(self, key: int) -> T:
         """Class method that returns value under the specific key."""
-        return self.items.search(key)
+        return search(self.root, key)
 
     def get_range(self, key_from: int, key_to: int) -> list[T]:
         """Class method that returns values under the keys in the defined range."""
         result = []
         for key in range(key_from, key_to+1):
-            result += self.items.search(key)
+            temp = search(self.root, key)
+            if temp is not None:
+                result += [temp.key, temp.value]
         return result
 
     def update(self, key: int, new_value: T) -> bool:
         """Class method that updates (overwrites) entry in database. In case of non-existing key value it returns
         false."""
-        if len(self.items.search(key)) == 0:
+        if search(self.root, key) is None:
             return False
-        self.items.update(key, new_value)
+        self.root = update(self.root, key, new_value)
 
     def delete(self, key: int) -> bool:
         """Class method that deletes entry under the specific key. In case of non-existing key value, it returns
         false."""
-        if len(self.items.search(key)) == 0:
+        if search(self.root, key) is None:
             return False
+        self.root = deleteNode(self.root, key)
         self.size -= 1
-        self.items.delete(key, None, self)
-        self.check()
 
     def __str__(self):
         return "TreeDatabase"
