@@ -12,7 +12,9 @@ class TreeDatabase(Generic[T], Database[T]):
 
     def __init__(self, values: list[tuple[int, T]]) -> None:
         self.items = None
+        self.size = 0
         for value in values:
+            self.size += 1
             if self.items is None:
                 self.items = Node(value[0], value[1])
             else:
@@ -29,6 +31,7 @@ class TreeDatabase(Generic[T], Database[T]):
         if len(self.items.search(key)) > 0:
             return False
         self.items.insert(key, value, left, right)
+        self.size += 1
         self.check()
 
     def get(self, key: int) -> T:
@@ -54,11 +57,15 @@ class TreeDatabase(Generic[T], Database[T]):
         false."""
         if len(self.items.search(key)) == 0:
             return False
+        self.size -= 1
         self.items.delete(key, None, self)
         self.check()
 
     def __str__(self):
         return "TreeDatabase"
+
+    def get_size(self):
+        return self.size
 
 
 def depth(node):

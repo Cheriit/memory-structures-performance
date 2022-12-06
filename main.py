@@ -1,4 +1,6 @@
-from tests import Test, AppendTest, CreateTest, ReadTest, ReadRangeTest, UpdateTest, MixtureTest, DeleteTest
+from typing import Type
+
+from tests import Test, CreateTest, ReadTest, ReadRangeTest, UpdateTest, MixtureTest, DeleteTest
 from databases import Database, ListDatabase, DictionaryDatabase, TreeDatabase
 from data import Person
 
@@ -13,16 +15,16 @@ params_list: list[int] = [
     90001,
     100001
 ]
-databases: list[Database] = [
-    ListDatabase[Person]([]),
-    DictionaryDatabase[Person]([]),
-    TreeDatabase[Person]([])
+databases: list[Type[Database]] = [
+    ListDatabase,
+    DictionaryDatabase,
+    TreeDatabase
 ]
 
 
-def run_test(test: Test, test_database) -> None:
+def run_test(test: Test, test_database, param: int) -> None:
     print(f'Running {str(test)} test.')
-    duration = test.run(f'out/{str(test)}.csv', test_database)
+    duration = test.run(f'out/{str(test)}.csv', test_database, param)
     print(f'Test took: {str(duration)} seconds')
 
 
@@ -31,18 +33,17 @@ def init_run(init_database, size=None) -> None:
         init_database.add(counter, Person.mock_person())
 
 
-def run_tests(run_database: Database, param_size: int = None):
-    init_run(run_database, param_size)
-    run_test(CreateTest(), run_database)
-    run_test(ReadTest(), run_database)
-    run_test(ReadRangeTest(), run_database)
-    run_test(UpdateTest(), run_database)
-    run_test(MixtureTest(), run_database)
-    run_test(DeleteTest(), run_database)
-    run_test(AppendTest(), run_database)
+def run_tests(run_database: Database, param: int):
+    init_run(run_database, param)
+    run_test(CreateTest(), run_database, param)
+    run_test(ReadTest(), run_database, param)
+    run_test(ReadRangeTest(), run_database, param)
+    run_test(UpdateTest(), run_database, param)
+    run_test(MixtureTest(), run_database, param)
+    run_test(DeleteTest(), run_database, param)
 
 
 if __name__ == '__main__':
     for database in databases:
         for param in params_list:
-            run_tests(database, param)
+            run_tests(database([x for x in enumerate(Person.mock_people(param))]), param)

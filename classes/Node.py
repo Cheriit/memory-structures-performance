@@ -32,14 +32,12 @@ class Node:
     def inorder(self):
         if self.left:
             self.left.inorder()
-        print(self.key, self.value)
         if self.right:
             self.right.inorder()
 
     def inorder_string(self):
         if self.left:
             self.left.inorder_string()
-        print("key: {}, value: {}".format(self.key, self.value))
         if self.right:
             self.right.inorder_string()
 

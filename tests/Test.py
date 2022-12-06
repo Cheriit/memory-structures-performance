@@ -9,7 +9,7 @@ class Test(ABC):
     Abstract class that performs given test scenario for all the given databases and adds them at the end of the
     given file.
     """
-    size: int = 30001
+    size: int = 3000
 
     @staticmethod
     @abstractmethod
@@ -19,13 +19,11 @@ class Test(ABC):
         pass
 
     @timer
-    def run(self, result_file_name: str, databases: list[Database]):
+    def run(self, result_file_name: str, database: Database, param: int):
         """Test runner that adds content to the file in the CSV format."""
-        results = []
-        for database in databases:
-            results.append(f'{str(database)},{str(self.perform_scenario(database))}')
+        result = f'{str(database)},{str(self.perform_scenario(database))},{param}\n'
         with open(result_file_name, 'a+') as file:
-            file.writelines(['\n'.join(results)])
+            file.write(result)
 
     @abstractmethod
     def __str__(self):

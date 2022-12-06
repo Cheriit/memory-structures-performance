@@ -17,7 +17,7 @@ class ReadTest(Test):
     def perform_scenario(database: Database[Person], index_range=range(1, Test.size)) -> None:
         """Class method that performs read scenario"""
         for _ in index_range:
-            database.get(random.randint(1, Test.size - 1))
+            database.get(random.randint(1, database.get_size() + Test.size - 1))
 
     def __str__(self):
         return "read"
