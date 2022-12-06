@@ -45,3 +45,8 @@ class Database(ABC, Generic[T]):
     def __str__(self):
         """Name of the database."""
         pass
+
+    @abstractmethod
+    def get_size(self):
+        """Size of the database."""
+        pass

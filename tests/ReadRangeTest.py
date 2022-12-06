@@ -8,7 +8,7 @@ from tests import Test
 
 def query_range(database, searches, elements_per_query):
     for _ in range(searches+1):
-        random_key = random.randint(1, Test.size)
+        random_key = random.randint(1, database.get_size() + Test.size)
         database.get_range(random_key, random_key + elements_per_query)
 
 

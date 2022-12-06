@@ -1,24 +1,49 @@
-from tests import Test, AppendTest, CreateTest, ReadTest, ReadRangeTest, UpdateTest, MixtureTest, DeleteTest
+from typing import Type
+
+from tests import Test, CreateTest, ReadTest, ReadRangeTest, UpdateTest, MixtureTest, DeleteTest
 from databases import Database, ListDatabase, DictionaryDatabase, TreeDatabase
 from data import Person
 
+params_list: list[int] = [
+    20001,
+    30001,
+    40001,
+    50001,
+    60001,
+    70001,
+    80001,
+    90001,
+    100001
+]
+databases: list[Type[Database]] = [
+    ListDatabase,
+    DictionaryDatabase,
+    TreeDatabase
+]
 
-def run_test(test: Test, databases) -> None:
+
+def run_test(test: Test, test_database, param: int) -> None:
     print(f'Running {str(test)} test.')
-    duration = test.run(f'out/{str(test)}.csv', databases)
+    duration = test.run(f'out/{str(test)}.csv', test_database, param)
     print(f'Test took: {str(duration)} seconds')
 
 
-def run_tests():
-    databases: list[Database] = [ListDatabase[Person]([]), DictionaryDatabase[Person]([]), TreeDatabase[Person]([])]
-    run_test(CreateTest(), databases)
-    run_test(ReadTest(), databases)
-    run_test(ReadRangeTest(), databases)
-    run_test(UpdateTest(), databases)
-    run_test(MixtureTest(), databases)
-    run_test(DeleteTest(), databases)
-    run_test(AppendTest(), databases)
+def init_run(init_database, size=None) -> None:
+    for counter in range(1, size):
+        init_database.add(counter, Person.mock_person())
+
+
+def run_tests(run_database: Database, param: int):
+    init_run(run_database, param)
+    run_test(CreateTest(), run_database, param)
+    run_test(ReadTest(), run_database, param)
+    run_test(ReadRangeTest(), run_database, param)
+    run_test(UpdateTest(), run_database, param)
+    run_test(MixtureTest(), run_database, param)
+    run_test(DeleteTest(), run_database, param)
 
 
 if __name__ == '__main__':
-    run_tests()
+    for database in databases:
+        for param in params_list:
+            run_tests(database([x for x in enumerate(Person.mock_people(param))]), param)

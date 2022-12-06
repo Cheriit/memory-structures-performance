@@ -12,6 +12,7 @@ class TreeDatabase(Generic[T], Database[T]):
     """
 
     def __init__(self, values: list[tuple[int, T]]) -> None:
+        self.size = 0
         sys.setrecursionlimit(5000)
         self.root = None
         for value in values:
@@ -28,6 +29,7 @@ class TreeDatabase(Generic[T], Database[T]):
         if search(self.root, key) is not None:
             return False
         self.root = insert(self.root, key, value)
+        self.size += 1
         self.check()
 
     def get(self, key: int) -> T:
@@ -56,9 +58,13 @@ class TreeDatabase(Generic[T], Database[T]):
         if search(self.root, key) is None:
             return False
         self.root = deleteNode(self.root, key)
+        self.size -= 1
 
     def __str__(self):
         return "TreeDatabase"
+
+    def get_size(self):
+        return self.size
 
 
 def depth(node):

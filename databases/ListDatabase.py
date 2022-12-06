@@ -55,3 +55,6 @@ class ListDatabase(Generic[T], Database[T]):
 
     def __str__(self):
         return "ListDatabase"
+
+    def get_size(self):
+        return len(self.items)

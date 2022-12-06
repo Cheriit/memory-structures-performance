@@ -17,7 +17,7 @@ class UpdateTest(Test):
     def perform_scenario(database: Database[Person]) -> None:
         """Class method that performs update scenario"""
         for _ in range(1, Test.size):
-            database.update(random.randint(1, Test.size - 1), Person.mock_person())
+            database.update(random.randint(1, database.get_size() + Test.size - 1), Person.mock_person())
 
     def __str__(self):
         return "update"

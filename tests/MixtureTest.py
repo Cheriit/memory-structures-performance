@@ -6,12 +6,13 @@ from databases import Database
 from tests import Test
 
 
-def query_mix(database, searches, mods):
-    for search_counter in range(1, searches):
-        database.get(random.randint(1, Test.size - 1))
-    for insert_counter in range(Test.size, Test.size + mods):
+def query_mix(database, mods):
+    size = database.get_size()
+    for search_counter in range(1, mods):
+        database.get(random.randint(1, database.get_size()))
+    for insert_counter in range(size, size + mods):
         database.add(insert_counter, Person.mock_person())
-    for delete_counter in range(Test.size, Test.size + mods):
+    for delete_counter in range(size, size + mods):
         database.delete(delete_counter)
 
 
