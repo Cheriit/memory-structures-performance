@@ -22,7 +22,7 @@ class DictionaryDatabase(Generic[T], Database[T]):
 
     def get(self, key: int) -> T:
         """Class method that returns value under the specific key."""
-        return self.items[key]
+        return self.items.get(key)
 
     def get_range(self, key_from: int, key_to: int) -> list[T]:
         """Class method that returns values under the keys in the defined range."""
@@ -48,3 +48,6 @@ class DictionaryDatabase(Generic[T], Database[T]):
 
     def __str__(self):
         return "DictionaryDatabase"
+
+    def get_size(self):
+        return len(self.items)

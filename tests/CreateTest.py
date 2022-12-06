@@ -14,7 +14,8 @@ class CreateTest(Test):
     @timer
     def perform_scenario(database: Database[Person]) -> None:
         """Class method that performs create scenario"""
-        for counter in range(1, Test.size):
+        start = database.get_size()
+        for counter in range(start, start + Test.size):
             database.add(counter, Person.mock_person())
 
     def __str__(self):
