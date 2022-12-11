@@ -6,20 +6,36 @@ from databases import Database, ListDatabase, DictionaryDatabase, TreeDatabase
 from data import Person
 
 params_list: list[int] = [
-    20001,
-    30001,
-    40001,
-    50001,
-    60001,
-    70001,
-    80001,
-    90001,
-    100001
+    101,
+    201,
+    301,
+    401,
+    501,
+    601,
+    701,
+    801,
+    901,
+    1001,
+    1101,
+    1201,
+    1301,
+    1401,
+    1601,
+    1701,
+    1801,
+    1901,
+    2001,
+    2101,
+    2201,
+    2301,
+    2401,
+    2501,
+    2601
 ]
 databases: list[Type[Database]] = [
+    TreeDatabase,
     ListDatabase,
-    DictionaryDatabase,
-    TreeDatabase
+    DictionaryDatabase
 ]
 
 
@@ -46,6 +62,7 @@ def run_tests(run_database: Database, param: int):
 
 if __name__ == '__main__':
     random.seed(1918)
-    for database in databases:
-        for param in params_list:
-            run_tests(database([x for x in enumerate(Person.mock_people(param))]), param)
+    for _ in range(5):
+        for database in databases:
+            for param in params_list:
+                run_tests(database([x for x in enumerate(Person.mock_people(param))]), param)
