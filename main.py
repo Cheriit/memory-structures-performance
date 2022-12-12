@@ -5,6 +5,8 @@ from tests import Test, CreateTest, ReadTest, ReadRangeTest, UpdateTest, Mixture
 from databases import Database, ListDatabase, DictionaryDatabase, TreeDatabase
 from data import Person
 
+iteration_count = 10
+
 params_list: list[int] = list(range(101, 12700, 100))
 
 databases: list[Type[Database]] = [
@@ -37,7 +39,7 @@ def run_tests(run_database: Database, param: int):
 
 if __name__ == '__main__':
     random.seed(1918)
-    for _ in range(5):
+    for _ in range(iteration_count):
         for database in databases:
             for param in params_list:
                 run_tests(database([x for x in enumerate(Person.mock_people(param))]), param)
