@@ -5,33 +5,8 @@ from tests import Test, CreateTest, ReadTest, ReadRangeTest, UpdateTest, Mixture
 from databases import Database, ListDatabase, DictionaryDatabase, TreeDatabase
 from data import Person
 
-params_list: list[int] = [
-    101,
-    201,
-    301,
-    401,
-    501,
-    601,
-    701,
-    801,
-    901,
-    1001,
-    1101,
-    1201,
-    1301,
-    1401,
-    1601,
-    1701,
-    1801,
-    1901,
-    2001,
-    2101,
-    2201,
-    2301,
-    2401,
-    2501,
-    2601
-]
+params_list: list[int] = list(range(101, 12700, 100))
+
 databases: list[Type[Database]] = [
     TreeDatabase,
     ListDatabase,
