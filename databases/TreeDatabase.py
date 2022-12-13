@@ -1,7 +1,6 @@
 from databases import Database
 from typing import TypeVar, Generic
 from classes.Node import insert, deleteNode, update, search
-import sys
 
 T = TypeVar('T')
 
@@ -10,13 +9,14 @@ class TreeDatabase(Generic[T], Database[T]):
     """
      Class that handles memory operation on the T-Tree structured "database".
     """
-
+    __slots__ = ('size', 'root')
     def __init__(self, values: list[tuple[int, T]]) -> None:
         self.size = 0
-        sys.setrecursionlimit(5000)
         self.root = None
         for value in values:
-            self.root = insert(self.root, value[0], value[1])
+            # self.root = insert(self.root, value[0], value[1])
+            self.add(value[0], value[1])
+            print(self.size)
 
     def check(self):
         if depth(self.root.left) - depth(self.root.right) > 1:

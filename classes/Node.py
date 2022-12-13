@@ -1,4 +1,5 @@
 class Node:
+    __slots__ = ('left', 'right', 'key', 'value')
     def __init__(self, key, value, left=None, right=None):
         self.left = left
         self.right = right
@@ -9,7 +10,6 @@ class Node:
 def insert(node, key, value):
     if node is None:
         return Node(key, value)
-
     if key < node.key:
         node.left = insert(node.left, key, value)
     else:

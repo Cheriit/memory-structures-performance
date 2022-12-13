@@ -5,9 +5,13 @@ from tests import Test, CreateTest, ReadTest, ReadRangeTest, UpdateTest, Mixture
 from databases import Database, ListDatabase, DictionaryDatabase, TreeDatabase
 from data import Person
 
-iteration_count = 10
+import sys
+import threading
 
-params_list: list[int] = list(range(101, 12700, 100))
+iteration_count = 1
+
+# params_list: list[int] = list(range(20001, 100001, 10000))
+params_list: list[int] = [100001]
 
 databases: list[Type[Database]] = [
     TreeDatabase,
@@ -37,9 +41,16 @@ def run_tests(run_database: Database, param: int):
     run_test(DeleteTest(), run_database, param)
 
 
-if __name__ == '__main__':
-    random.seed(1918)
+def main_function():
     for _ in range(iteration_count):
         for database in databases:
             for param in params_list:
                 run_tests(database([x for x in enumerate(Person.mock_people(param))]), param)
+
+
+if __name__ == '__main__':
+    random.seed(1918)
+    sys.setrecursionlimit(100000)
+    threading.stack_size(70000000)
+    thread = threading.Thread(target=main_function)
+    thread.start()
