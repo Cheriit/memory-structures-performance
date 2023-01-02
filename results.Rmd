@@ -20,13 +20,13 @@ library(plotly)
 ```
 
 
-```{r init, echo=FALSE, warning=FALSE}
+```{r init, echo=FALSE}
 draw_chart <- function(operation) {
   data <- read.csv(paste("out/", operation, ".csv", sep=""), header=FALSE, col.names=c("database", "time", "size"))
   df <- data %>%
     mutate(database=factor(database, labels=c('Dictionary', 'List', 'T-Tree')), time=time/1000, size=size/1000) %>%
     group_by(database, size) %>%
-    summarize(time=mean(time))
+    summarize(time=mean(time), .groups='drop')
   
   return(
     ggplot(df, aes(x=size, y=time, color=database, fill=database, shape=database)) + 
@@ -97,7 +97,23 @@ draw_chart <- function(operation) {
 
 # Metodologia badań
 
-W tym rozdziale zostanie opisana obrana metodologia badań.
+W tym rozdziale zostanie opisana obrana metodologia badań uwzględniająca poszczególne operacje, środowisko oraz sposób przeprowadzenia badań.
+
+## Wybrane operacje
+
+Do badań wybrano 6 różnych operacji:
+
+- Dodawanie - do istniejącej bazy danych dodano *n* różnych nowych wartości o kolejnych wartościach indeksu, rozpoczynających się od wartości większej o `1` od największej obecnie istniejących. Pod każdy z kluczy generowano losowo dane osoby (imię, nazwisko, numer PESEL, adres mailowy, numer telefonu, wiek oraz adres).
+
+- Odczyt - do odczytu wybierano każdorazowo losową wartość ze wszystkich wartości indeksu bazy danych.
+
+- Odczyt sekwencyjny - do odczytu wybierano każdorazowo losową wartość początkową przedziału. Na jej podstawie każdorazowo dokonano `100` odczytów sekwencyjnych wartości kluczy. 
+
+- Aktualizacja - do aktualizacji wybierano każdorazowo losową wartość ze wszystkich wartości indeksu bazy danych, a następnie dokonywano ponownego generowania danych osoby.
+
+- Usuwanie - do usuwania wybrano każdorazowo losową wartość, od wartości minimalnej, do maksymalnej z bazy danych. Niektóre odczyty mogły próbować usunąć wartość nieistniejącą.
+
+- Połączenie operacji - operacja składająca się z łańcucha 100 operacji odczytu z całej bazy danych, `100` operacji dodania wartości o nowych indeksach wzorem operacji dodania oraz 100 operacji usunięcia dodanych przed chwilą danych.
 
 ## Przeprowadzone badania 
 
@@ -109,20 +125,20 @@ Sekwencje operacji zostały uruchomione na bazach danych z różną, początkow�
 
 W celu zminimalizowania wpływu usług uruchamianych przez system w tle niezależnie od użytkownika, generując outlayery, cały proces został wykonany `3` razy, pozwalając na uśrednienie wyników badań.
 
-## Wybrane operacje
-
 ## Opis środowiska
 
 Środowisko do przeprowadzenia badań stanowi komputer wyposażony w:
 
 - Procesor Ryzen 5 3600
-- 16 GB pamięci DDR4
-- System Windows 11
-- Python w wersji 3.11.1
+- 16 GB pamięci DDR4 o taktowaniu 3200 MHz
+- System Windows 11 w wersji `21H2`
+- Python w wersji `3.11.1`
 
 W ramach przeprowadzanych badań, nie dokonywano żadnych operacji na wyżej wymienionym systemie.
 
 # Wyniki badań
+
+W tej sekcji zawiera się wizualizacja oraz opis wyników przeprowadzonych badań.
 
 ## Dodawanie danych
 ```{r create}
@@ -152,8 +168,6 @@ ggplotly(draw_chart("delete"))
 # Zakończenie
 
 ## Podsumowanie prac i wnioski
-
-## Dalszy kierunek rozwoju
 
 # Literatura
 
