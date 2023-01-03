@@ -26,7 +26,7 @@ draw_chart <- function(operation) {
   df <- data %>%
     mutate(database=factor(database, labels=c('Dictionary', 'List', 'T-Tree')), time=time/1000, size=size/1000) %>%
     group_by(database, size) %>%
-    summarize(time=mean(time))
+    summarize(time=mean(time), .groups='drop')
   
   return(
     ggplot(df, aes(x=size, y=time, color=database, fill=database, shape=database)) + 
@@ -57,13 +57,88 @@ draw_chart <- function(operation) {
 
 ## Cel pracy 
 
+# Implementacja struktur pamięciowych
+
+## Lista
+
+### Dodawanie
+
+### Odczyt
+
+### Odczyt sekwencyjny
+
+### Aktualizacja
+
+### Usuwanie
+
+## Słownik
+
+### Dodawanie
+
+### Odczyt
+
+### Odczyt sekwencyjny
+
+### Aktualizacja
+
+### Usuwanie
+
+## T-Drzewo
+
+### Dodawanie
+
+### Odczyt
+
+### Odczyt sekwencyjny
+
+### Aktualizacja
+
+### Usuwanie
+
 # Metodologia badań
+
+W tym rozdziale zostanie opisana obrana metodologia badań uwzględniająca poszczególne operacje, środowisko oraz sposób przeprowadzenia badań.
+
+## Wybrane operacje
+
+Do badań wybrano 6 różnych operacji:
+
+- Dodawanie - do istniejącej bazy danych dodano *n* różnych nowych wartości o kolejnych wartościach indeksu, rozpoczynających się od wartości większej o `1` od największej obecnie istniejących. Pod każdy z kluczy generowano losowo dane osoby (imię, nazwisko, numer PESEL, adres mailowy, numer telefonu, wiek oraz adres).
+
+- Odczyt - do odczytu wybierano każdorazowo losową wartość ze wszystkich wartości indeksu bazy danych.
+
+- Odczyt sekwencyjny - do odczytu wybierano każdorazowo losową wartość początkową przedziału. Na jej podstawie każdorazowo dokonano `100` odczytów sekwencyjnych wartości kluczy. 
+
+- Aktualizacja - do aktualizacji wybierano każdorazowo losową wartość ze wszystkich wartości indeksu bazy danych, a następnie dokonywano ponownego generowania danych osoby.
+
+- Usuwanie - do usuwania wybrano każdorazowo losową wartość, od wartości minimalnej, do maksymalnej z bazy danych. Niektóre odczyty mogły próbować usunąć wartość nieistniejącą.
+
+- Połączenie operacji - operacja składająca się z łańcucha 100 operacji odczytu z całej bazy danych, `100` operacji dodania wartości o nowych indeksach wzorem operacji dodania oraz 100 operacji usunięcia dodanych przed chwilą danych.
 
 ## Przeprowadzone badania 
 
+W celu uzyskania miarodajnych wyników, objęto poniższą metodologie badań.
+
+Każda z operacji została wykonana `3000` razy pod rząd, w celu uniknięcia tzw. outlayerów, mierząc czas wykonania zbioru operacji. Pozwoliło to osiągnąć uśrednione czasy dla każdej z operacji. W czas operacji jest również wliczony losowy wybór wartości z przedziału zależnego od wielkości danych.
+
+Sekwencje operacji zostały uruchomione na bazach danych z różną, początkową ilością danych. zaczynając na `10,000` rekordach, kończąc na `100,000` z krokiem `10,000`.
+
+W celu zminimalizowania wpływu usług uruchamianych przez system w tle niezależnie od użytkownika, generując outlayery, cały proces został wykonany `3` razy, pozwalając na uśrednienie wyników badań.
+
 ## Opis środowiska
 
+Środowisko do przeprowadzenia badań stanowi komputer wyposażony w:
+
+- Procesor Ryzen 5 3600
+- 16 GB pamięci DDR4 o taktowaniu 3200 MHz
+- System Windows 11 w wersji `21H2`
+- Python w wersji `3.11.1`
+
+W ramach przeprowadzanych badań, nie dokonywano żadnych operacji na wyżej wymienionym systemie.
+
 # Wyniki badań
+
+W tej sekcji zawiera się wizualizacja oraz opis wyników przeprowadzonych badań.
 
 ## Dodawanie danych
 ```{r create}
@@ -92,9 +167,7 @@ ggplotly(draw_chart("delete"))
 
 # Zakończenie
 
-## Podsumowanie prac
-
-## Dalszy kierunek rozwoju
+## Podsumowanie prac i wnioski
 
 # Literatura
 
