@@ -16,7 +16,7 @@ class TreeDatabase(Generic[T], Database[T]):
         for value in values:
             # self.root = insert(self.root, value[0], value[1])
             self.add(value[0], value[1])
-            print(self.size)
+        print(self.size)
 
     def check(self):
         if depth(self.root.left) - depth(self.root.right) > 1:

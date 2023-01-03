@@ -8,10 +8,10 @@ from data import Person
 import sys
 import threading
 
-iteration_count = 1
+iteration_count = 4
 
-# params_list: list[int] = list(range(20001, 100001, 10000))
-params_list: list[int] = [100001]
+params_list: list[int] = list(range(20001, 100001, 10000))
+# params_list: list[int] = list(range(20001, 30001, 1000))
 
 databases: list[Type[Database]] = [
     TreeDatabase,
