@@ -22,9 +22,7 @@ class ReadRangeTest(Test):
     @timer
     def perform_scenario(database: Database[Person]) -> None:
         """Class method that performs read range scenario"""
-        query_range(database, Test.size, 10)
         query_range(database, Test.size//10, 100)
-        query_range(database, Test.size//100, 1000)
 
     def __str__(self):
         return "read_range"

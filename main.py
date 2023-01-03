@@ -2,19 +2,21 @@ import random
 from typing import Type
 
 from tests import Test, CreateTest, ReadTest, ReadRangeTest, UpdateTest, MixtureTest, DeleteTest
-from databases import Database, ListDatabase, DictionaryDatabase, TreeDatabase
+from databases import Database, ListDatabase, DictionaryDatabase, TreeDatabase100, TreeDatabase500, TreeDatabase1000
 from data import Person
 
 import sys
 import threading
 
-iteration_count = 4
+iteration_count = 5
 
 params_list: list[int] = list(range(20001, 100001, 10000))
 # params_list: list[int] = list(range(20001, 30001, 1000))
 
 databases: list[Type[Database]] = [
-    TreeDatabase,
+    TreeDatabase100,
+    TreeDatabase500,
+    TreeDatabase1000,
     ListDatabase,
     DictionaryDatabase
 ]
