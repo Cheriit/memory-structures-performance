@@ -46,7 +46,19 @@ draw_chart <- function(operation, trans = "identity") {
 }
 ```
 
+Bazy danych są obecnie jedną z najważniejszych dziedzin informatyki, pozwalając na przechowywanie i przetwarzanie masywów danych. Obecnie coraz popularniejsze stają się rozwiązania baz pamięciowych baz danych (ang. *in-memory*), które nie przechowują danych na dysku, lecz w pamięci operacyjnej systemu, pozwalając na szybszy dostęp do nich. 
+
+Mimo wszystko, implementacja takich baz może opierać się na różnch strukturach, które charakteryzują się różną wydajnością poszczególnych operacji takich jak odczyt, zapis czy modyfikacja. 
+
+Z tego też powodu wybraliśmy 3 różne struktury pamięciowe, a następnie zmieżyliśmy czas poszczególnych wykonywania wielokrotnego zapisu, odczytu, odczytu sekwencyjnego, modyfikacji oraz usuwania dla baz danych o różnej wielkości oraz zajętości. 
+
+Na podstawie wyników jesteśmy w stanie stwierdzić, że struktury oparte na słowniku pozwalają na najwydajniejsze wstawianie oraz odczyt danych, a te na T-Drzewie na odczyt sekwencyjny, zapewniając bardzo dobre wyniki względem pozostałych struktur.
+
+Kod projektu dostępny jest pod adresem: https://github.com/Cheriit/memory-structures-performance
+
 # Wprowadzenie
+
+Wstęp do pracy opisujący motywacje, wybrany problem oraz cel pracy.
 
 ## Motywacje i opis problemu
 
@@ -542,7 +554,7 @@ ggplotly(draw_chart("create", "log10"))
 
 Zauważyć można, że w procesie dodawania najwolniejsza jest baza danych oparta na liście, gdzie jej złożoność rośnie mniej-więcej liniowo.
 
-Następna w kolejności jak chodzi o prędkość jest baza oparta na t-drzewie dla węzła o wielkości 100, którego złożoność rożnie mniej więcej liniowo W przypadku dwóch pozostałych baz opartych na t-drzewach zauważyć można, że rosną one bardzo powoli.
+Następna w kolejności jak chodzi o prędkość jest baza oparta na T-Drzewie dla węzła o wielkości 100, którego złożoność rożnie mniej więcej liniowo W przypadku dwóch pozostałych baz opartych na T-Drzewach zauważyć można, że rosną one bardzo powoli.
 
 Najszybszą operację dodawania posiada baza oparta na słowniku, której to czas odczytu jest stały.
 
@@ -554,7 +566,7 @@ ggplotly(draw_chart("read", "log10"))
 
 Operacje odczytu losowego prezentują się podobie do operacji dodawania danych.
 
-Najwolniejszy odczyt posiada struktura listowa, następnie struktury oparte na t-drzewie, a najszybsza jest struktura oparta na słowniku, która to jest jedyna niezależna od wielkości bazy danych.
+Najwolniejszy odczyt posiada struktura listowa, następnie struktury oparte na T-Drzewie, a najszybsza jest struktura oparta na słowniku, która to jest jedyna niezależna od wielkości bazy danych.
 
 ## Odczyt sekwencyjny danych
 
@@ -562,9 +574,9 @@ Najwolniejszy odczyt posiada struktura listowa, następnie struktury oparte na t
 ggplotly(draw_chart("read_range", "log10"))
 ```
 
-Operacja odczytu sekwencyjnego na bazie opartej na słowniku jest najwolniejsza. Nieznacznie szybsza jest ta oparta na liście oraz na t-drzewie z węzłem o wielkości 100.
+Operacja odczytu sekwencyjnego na bazie opartej na słowniku jest najwolniejsza. Nieznacznie szybsza jest ta oparta na liście oraz na T-Drzewie z węzłem o wielkości 100.
 
-Znacznie szybsze są struktury oparte na t-drzewie z węzłami o wielkościach 500 oraz 1000.
+Znacznie szybsze są struktury oparte na T-Drzewie z węzłami o wielkościach 500 oraz 1000.
 
 Wszystkie struktury wykazały tutaj złożoność liniową.
 
@@ -576,7 +588,7 @@ ggplotly(draw_chart("update", "log10"))
 
 Zdecydowanie najwolniejszą strukturą do tej operacji jest lista, której to złożoność rośnie liniowo.
 
-Wszystkie pozostałe struktury wykonują tą operację znacznie szybciej. Jednak warto zauważyć, że poza listą, t-drzewo z węzłem o wielkości 100 widocznie zależy od wielkości bazy danych.
+Wszystkie pozostałe struktury wykonują tą operację znacznie szybciej. Jednak warto zauważyć, że poza listą, T-Drzewo z węzłem o wielkości 100 widocznie zależy od wielkości bazy danych.
 
 ## Usuwanie danych
 
@@ -586,7 +598,7 @@ ggplotly(draw_chart("delete", "log10"))
 
 Usuwanie danych z listy zajmuje najwięcej czasu i rośnie ono liniowo.
 
-Następna jest baza oparta na t-drzewie o wielkości 100, 1000 oraz 500, które rosną logarytmicznie.
+Następna jest baza oparta na T-Drzewie o wielkości 100, 1000 oraz 500, które rosną logarytmicznie.
 
 Najszybsze jest operowanie na strukturze słownika, które rośnie nieznacznie w zależności od wielkości bazy danych.
 
@@ -596,11 +608,9 @@ Najszybsze jest operowanie na strukturze słownika, które rośnie nieznacznie w
 ggplotly(draw_chart("mixture", "log10"))
 ```
 
-Połączenie operacji prezentuje się analogicznie do wykresu operacji dodawania, gdzie operowanie na liście zajmuje najdłużej, następnie jest operowanie na t-drzewie o węźle z wielkością 100, 1000, 500 oraz na słowniku.
+Połączenie operacji prezentuje się analogicznie do wykresu operacji dodawania, gdzie operowanie na liście zajmuje najdłużej, następnie jest operowanie na T-Drzewie o węźle z wielkością 100, 1000, 500 oraz na słowniku.
 
 # Zakończenie
-
-## Podsumowanie prac i wnioski
 
 # Literatura {#literature}
 
