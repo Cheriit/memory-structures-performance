@@ -21,7 +21,7 @@ library(plotly)
 
 
 ```{r init, echo=FALSE}
-draw_chart <- function(operation) {
+draw_chart <- function(operation, trans = "identity") {
   data <- read.csv(paste("out/", operation, ".csv", sep=""), header=FALSE, col.names=c("database", "time", "size"))
   df <- data %>%
     mutate(database=factor(database, labels=c('Dictionary', 'List', 'T-Tree100', 'T-Tree500', 'T-Tree1000')), time=time/1000, size=size/1000) %>%
@@ -38,7 +38,7 @@ draw_chart <- function(operation) {
         fillz="", 
         y="Operation time [s]", 
         title=paste("Memory structure effeciency for", operation, "operation.")) + 
-      scale_y_continuous(trans='log10') + 
+      scale_y_continuous(trans=trans) + 
       scale_fill_discrete(name="Memory structure type:") +
       scale_color_discrete(name="Memory structure type:") +
       scale_shape_discrete(name="Memory structure type:")
@@ -142,33 +142,62 @@ W tej sekcji zawiera się wizualizacja oraz opis wyników przeprowadzonych bada�
 
 ## Dodawanie danych
 ```{r create}
-ggplotly(draw_chart("create"))
+ggplotly(draw_chart("create", "log10"))
 ```
+
+Zauważyć można, że w procesie dodawania najwolniejsza jest baza danych oparta na liście, gdzie jej złożoność rośnie mniej-więcej liniowo. 
+
+Następna w kolejności jak chodzi o prędkość jest baza oparta na t-drzewie dla węzła o wielkości 100, którego złożoność rożnie mniej więcej liniowo 
+W przypadku dwóch pozostałych baz opartych na t-drzewach zauważyć można, że rosną one bardzo powoli. 
+
+Najszybszą operację dodawania posiada baza oparta na słowniku, której to czas odczytu jest stały.
 
 ## Odczyt losowy danych
 ```{r read}
-ggplotly(draw_chart("read"))
+ggplotly(draw_chart("read", "log10"))
 ```
+
+Operacje odczytu losowego prezentują się podobie do operacji dodawania danych. 
+
+Najwolniejszy odczyt posiada struktura listowa, następnie struktury oparte na t-drzewie, a najszybsza jest struktura oparta na słowniku, która to jest jedyna niezależna od wielkości bazy danych.
 
 ## Odczyt sekwencyjny danych
 ```{r read_range}
-ggplotly(draw_chart("read_range"))
+ggplotly(draw_chart("read_range", "log10"))
 ```
+
+Operacja odczytu sekwencyjnego na bazie opartej na słowniku jest najwolniejsza. Nieznacznie szybsza jest ta oparta na liście oraz na t-drzewie z węzłem o wielkości 100.
+
+Znacznie szybsze są struktury oparte na t-drzewie z węzłami o wielkościach 500 oraz 1000.
+
+Wszystkie struktury wykazały tutaj złożoność liniową.
 
 ## Aktualizacja danych
 ```{r update}
-ggplotly(draw_chart("update"))
+ggplotly(draw_chart("update", "log10"))
 ```
+
+Zdecydowanie najwolniejszą strukturą do tej operacji jest lista, której to złożoność rośnie liniowo.
+
+Wszystkie pozostałe struktury wykonują tą operację znacznie szybciej. Jednak warto zauważyć, że poza listą, t-drzewo z węzłem o wielkości 100 widocznie zależy od wielkości bazy danych. 
 
 ## Usuwanie danych
 ```{r delete}
-ggplotly(draw_chart("delete"))
+ggplotly(draw_chart("delete", "log10"))
 ```
+
+Usuwanie danych z listy zajmuje najwięcej czasu i rośnie ono liniowo.
+
+Następna jest baza oparta na t-drzewie o wielkości 100, 1000 oraz 500, które rosną logarytmicznie. 
+
+Najszybsze jest operowanie na strukturze słownika, które rośnie nieznacznie w zależności od wielkości bazy danych.
 
 ## Połączenie operacji
 ```{r mixture}
-ggplotly(draw_chart("mixture"))
+ggplotly(draw_chart("mixture", "log10"))
 ```
+
+Połączenie operacji prezentuje się analogicznie do wykresu operacji dodawania, gdzie operowanie na liście zajmuje najdłużej, następnie jest operowanie na t-drzewie o węźle z wielkością 100, 1000, 500 oraz na słowniku.
 
 # Zakończenie
 
