@@ -19,7 +19,6 @@ library(ggplot2)
 library(plotly)
 ```
 
-
 ```{r init, echo=FALSE}
 draw_chart <- function(operation, trans = "identity") {
   data <- read.csv(paste("out/", operation, ".csv", sep=""), header=FALSE, col.names=c("database", "time", "size"))
@@ -47,53 +46,448 @@ draw_chart <- function(operation, trans = "identity") {
 }
 ```
 
-# Abstract
-
 # Wprowadzenie
 
 ## Motywacje i opis problemu
 
-## Wybrane struktury pamięciowe 
+Motywem przewodnim pracy jest chęć sprawdzenia w działaniu różnych konceptów struktur pamięciowych, które opisane zostaną w dalszej części pracy.
 
-## Cel pracy 
+Problem został określony jako pytanie: *Która z wybranych struktur pamięciowych w zadanych zmiennych warunkach okaże się najwydajniejsza dla różnych operacji?*
 
-# Implementacja struktur pamięciowych
+## Wybrane struktury pamięciowe
+
+Do przeprowadzonych eksperymentów wybrane zostały następujące struktury:
+
+-   Lista,
+-   Słownik,
+-   T-Drzewa w wariantach:
+    -   100 węzłów,
+    -   500 węzłów,
+    -   1000 węzłów.
+
+Struktury dobrane zostały na względ na swoją różnorodność i chęć sprawdzenia w praktyce różnych podejść do operowania na danych.
+
+## Cel pracy
+
+Celem pracy jest analiza porównawcz wybranych struktur pamięciowych, w odniesieniu do serii testów, których zadaniem jest sprawdzenie szybkości danych rozwiązań, dla operacji:
+
+-   dodawania,
+-   odczytu,
+-   odczytu sekwencyjnego,
+-   aktualizacji,
+-   usuwania,
+-   kombinacji powyższych operacji.
+
+Koncepty testów oparte zostały na propozycji zaprezentowanej w [A Study of Index Structures for Main Memory Database Management Systems](#literature).
+
+# Implementacja baz danych opartych na strukturach pamięciowych
+
+W sekcji tej znajduje się informacja odnośnie sposobu implementacji każdej ze struktur. Wszystkie struktury zostały zaimplementowane w języku *Python*.
 
 ## Lista
 
+Implementacja tej bazy opiera się na wbudowanej strukturze listy, której zadaniem jest przechowywanie wielu zmiennych w jednym obiekcie.
+
 ### Dodawanie
+
+``` py
+def add(self, key: int, value: T) -> bool:
+    for item in self.items:
+        if item[0] == key:
+            return False
+    self.items.append((key, value))
+```
+
+*Kod prezentujący metodę dodawania elementu do listy.*
+
+Metoda przyjmująca 2 argumenty: key (liczba całkowita) oraz value.
+
+Operacja ta wykonywana jest na istniejącej bazie danych. Do bazy danych dodawana jest para `(key, value)` z unikalnym kluczem w postaci liczby całkowitej. Tuż po wywołaniu metody, baza danych sprawdzana jest pod kątem występowania klucza w bazie.
+
+Jeżeli klucz znajduje się w bazie danych, operacja jest przerywana, zwrócone zostanie False, w przeciwnym wypadku para dodawana jest do bazy danych
 
 ### Odczyt
 
+``` py
+def get(self, key: int) -> T:
+    for item in self.items:
+        if item[0] == key:
+            return item[1]
+    return None
+```
+
+*Kod prezentujący metodę odczytującą element z listy.*
+
+Metoda przyjmująca 1 argument w postaci liczby całkowitej - `key`.
+
+Odczytywanie z listy zaimplementowane jest za pomocą pętli for przeszukującej całą bazę danych. Pętla wykonywana jest do pierwszego wystąpienia poszukiwanego klucza.
+
+Jeżeli podczas przeszukiwania listy klucz nie zostanie znaleziony, zwracane jest `None`, reprezentujące wartość pustą lub wartość, która nie istnieje.
+
 ### Odczyt sekwencyjny
+
+``` py
+def get_range(self, key_from: int, key_to: int) -> list[T]:
+    to_return = []
+    for item in self.items:
+        if key_from <= item[0] <= key_to:
+            to_return.append(item[1])
+    return to_return
+```
+
+*Kod prezentujący metodę odczytujący sekwencje elementów z listy.*
+
+Metoda przyjmuje 2 argumenty - `key_from` oraz `key_to`, których postacią są 2 liczby całkowite.
+
+Do operacji odczytu sekwencyjnego z listy wykorzystywana jest pętla for. Przeszukiwana jest zawsze cała lista w celu znalezienia wartości, dla kluczy z przedziału od `key_from` do `key_to`.
+
+Wyniki zbierane są w tymczasową listę `to_return`, która jest zawsze zwracana - niezależnie czy jest pusta czy nie.
 
 ### Aktualizacja
 
+``` py
+def update(self, key: int, new_value: T) -> bool:
+    for item in self.items:
+        if item[0] == key:
+            index_to_update = self.items.index(item)
+            self.items[index_to_update] = (key, new_value)
+            return True
+    return False
+```
+
+*Kod prezentujący metodę aktualizacji elementu w liście.*
+
+Do poprawnego wywołania metody aktualizacji wymagane jest podanie 2 argumentów: klucza - `key` oraz nowej wartości - `new_value`.
+
+Operacja aktualizowania wartości przy danym kluczu odbywa się za pomocą pętli for. Pętla wykonywana jest do pierwszego wystąpienia danego klucza, dla którego wartość `value` zostaje zmieniona przez wskazane `new_value`.
+
+Jeżeli klucz nie znajduje się w bazie danych zwrócona zostanie wartość `False`.
+
 ### Usuwanie
+
+``` py
+def delete(self, key: int) -> bool:
+    for item in self.items:
+        if item[0] == key:
+            self.items.remove(item)
+            return True
+    return False
+```
+
+*Kod prezentujący metodę usuwającą element z listy.*
+
+Metoda przyjmująca tylko 1 argument, czyli liczbę całkowitą `key`.
+
+Operacja usuwania odbywa się za pomocą pętli for. Przeszukiwanie w celu znalezienia klucza wykonywane jest aż do znalezienia owego klucza. Tuż przed przerwaniem wykonywania pętli, para z danym kluczem zostaje usunięta, zwrócone zostanie `True`.
+
+W przeciwnym wypadku, jeżeli para z danym kluczem nie istnieje metoda zwraca wartość `False`.
 
 ## Słownik
 
+Implementacja tej bazy opiera się na wbudowanej strukturze słownika (ang. *dictionary*), której zadaniem jest przechowywanie wielu par o postaci klucz-wartość w jednej zmiennej.
+
 ### Dodawanie
+
+``` py
+def add(self, key: int, value: T) -> bool:
+    if key in self.items.keys():
+        return False
+    self.items[key] = value
+```
+
+*Kod prezentujący metodę dodającą element do słownika.*
+
+Metoda przyjmująca 2 argumenty: klucz (`key`) oraz wartość (`value`). Klucz jest unikalną wartością w postaci liczby całkowitej.
+
+Dodawanie elementu do słownika rozpoczyna się od sprawdzenia czy klucz znajduje się w bazie danych. Jeśli tak, zwracana jest wartość `False`, w przeciwnym przypadku do klucza `key` przypisywana jest wartość `value`.
 
 ### Odczyt
 
+``` py
+def get(self, key: int) -> T:
+    return self.items.get(key)
+```
+
+*Kod prezentujący metodę odczytującą element ze słownika.*
+
+Metoda przyjmuje 1 argument, czyli liczbę całkowitą jako `key`.
+
+Pobierana i zwracana jest wartość dla danego klucza, jeżeli klucz nie znajduje się w słowniku, zwracane zostaje `None`.
+
 ### Odczyt sekwencyjny
+
+``` py
+def get_range(self, key_from: int, key_to: int) -> list[T]:
+    to_return = []
+    for key in self.items.keys():
+        if key_from <= key <= key_to:
+            to_return.append(self.items[key])
+    return to_return
+```
+
+*Kod prezentujący metodę odczytującą sekwencje elementów ze słownika.*
+
+Metoda przyjmuje 2 argumenty w postaci liczb całkowitych: `key_from`, `key_to`, które tworzą przedział działania pętli for.
+
+Przeszukiwany jest cały słownik w poszukiwaniu pasujących kluczy. Wszystkie znalezione wartości umieszczane są w liście `to_return`, która zawsze jest zwracana, nawet jeżeli jest pusta.
 
 ### Aktualizacja
 
+``` py
+def update(self, key: int, new_value: T) -> bool:
+    if key not in self.items.keys():
+        return False
+    self.items[key] = new_value
+```
+
+*Kod prezentujący metodę aktualizującą elementy w słowniku.*
+
+Do poprawnego działania metody wymagane są 2 argumenty: klucz (`key`) w postaci liczby całkowitej oraz nową wartość (`new_value`).
+
+Po wywołaniu metody, słownik sprawdzany jest pod kątem występowania danego klucza - aby przypadkiem nie utworzyć pary z kluczem, który wcześniej nie istniał. Po poprawnym zweryfikowaniu słownika, wartość dla klucza zostaje zastąpiona przez wartość `new_value`.
+
+W przypadku, gdy klucz nie istnieje w słowniku, zwracana zostaje wartość `False`.
+
 ### Usuwanie
+
+``` py
+def delete(self, key: int) -> bool:
+    if key not in self.items.keys():
+        return False
+    self.items.pop(key)
+```
+
+*Kod prezentujący metodę usuwającą element ze słownika.*
+
+Metoda do poprawnego działania wymaga podania 1 argumentu, czyli klucza (`key`) w postaci liczby całkowitej.
+
+Na początku operacji słownik sprawdzany jest pod kątem występowania klucza, jeśli klucz znajduje się w bazie danych, jest usuwany. W przeciwnym wypadku zostaje zwrócona wartość `False`.
 
 ## T-Drzewo
 
+T-Drzewo zostało zaimplementowane w języku Python.
+
+W tym celu została stworzona klasa Node, która odpowiada jednostce pojedynczego węzła w drzewie. Całość została stworzona na podstawie [A Study of Index Structures for Main Memory Database Management Systems](#literature).
+
+Jest to struktura drzewiasta wywarzona, której każdy wierzchołek zawiera wskaźnik do wierzchołka zawierającego wartości indeksu mniejsze od `key_from` po lewej oraz większe od `key_to` po prawej. Wewnętrznie przechowuje ona wartości dla indeksów pomiędzy `key_from` oraz `key_to`.
+
+``` py
+class Node:
+    __slots__ = ('left', 'right', 'key_from', 'key_to', 'values')
+ 
+    def __init__(self, key, value, node_size=100, left=None, right=None):
+        self.left = left
+        self.right = right
+        self.key_from = key // node_size * node_size
+        self.key_to = key // node_size * node_size + node_size - 1
+        self.values = {key: value}
+```
+
+*Kod prezentujący klasę węzła w T-Drzewie.*
+
 ### Dodawanie
+
+``` py
+def add(self, key: int, value: T) -> bool:
+    if search(self.root, key) is not None:
+        return False
+    self.root = insert(self.root, key, value)
+    self.size += 1
+    self.check()
+    
+def insert(node, key, value):
+    if node is None:
+        return Node(key, value)
+    if key < node.key_from:
+        node.left = insert(node.left, key, value)
+    elif key > node.key_to:
+        node.right = insert(node.right, key, value)
+    else:
+        node.values[key] = value
+    return node
+```
+
+*Kod prezentujący metodę dodającą element do drzewa wraz z metodą pomocniczą.*
+
+```py
+def check(self):
+    if depth(self.root.left) - depth(self.root.right) > 1:
+        self.root = rotation_right(self.root)
+    elif depth(self.root.right) - depth(self.root.left) > 1:
+        self.root = rotation_left(self.root)
+ 
+def depth(node):
+    if node is None:
+        return 0
+    else:
+        left_depth = depth(node.left)
+        right_depth = depth(node.right)
+ 
+        if left_depth > right_depth:
+            return left_depth + 1
+        else:
+            return right_depth + 1
+ 
+def rotation_right(node):
+    y = node.left
+    t = y.right
+ 
+    y.right = node
+    node.left = t
+ 
+    return y
+ 
+def rotation_left(node):
+    y = node.right
+    t = y.left
+ 
+    y.left = node
+    node.right = t
+ 
+    return y
+```
+
+*Kod reprezentujący implementacje metod pomocniczych służących do rotacji drzewa.*
+
+Metoda do poprawnego działania wymaga 2 argumentów: klucza (`key`) oraz wartości (`value`).
+
+Dane dodawane są nawet do nieistniejącego drzewa, jeśli drzewo nie istnieje to przy pierwszej dodawanej wartości jest tworzone.
+
+Na początku operacji drzewo jest przeszukiwane, by uniknąć próby dodania istniejącego klucza do drzewa - w przypadku, gdy klucz istnieje w bazie danych, zwrócona zostanie wartość `False`.
+
+Następnie wartość jest już dodawana do drzewa według założeń drzewa w postaci wpisu do węzła. Każdy węzeł ma równy rozmiar i przechowuje równą liczbę wpisów w postaci par klucz-wartość. Dodatkowo atrybutami opisującymi węzeł są granice przedziału kluczy: `key_from`, `key_to`. Zaraz po dodaniu pary do drzewa, zwiększany jest licznik rozmiaru bazy danych oraz następuje sprawdzenie drzewa za pomocą metody `check()`, która ma na celu sprawdzenie możliwości rotacji drzewa w lewo, bądź w prawo.
 
 ### Odczyt
 
+```py
+def get(self, key: int) -> T:
+    res = search(self.root, key)
+    if res is not None:
+        return res.values[key]
+    return None
+    
+def search(root, key):
+    if root is None:
+        return root
+    if root.key_from <= key <= root.key_to:
+        if key in root.values:
+            return root
+    if root.key_from > key:
+        return search(root.left, key)
+    return search(root.right, key)
+```
+
+*Kod reprezentujący implementację odczytywania wartości z drzewa wraz z metodą pomocniczą.*
+
+Wymaganiem metody jest 1 argument: klucz (`key`). 
+
+Wykorzystywany jest on do przeszukania drzewa w celu znalezienia wartości o podanym kluczu. Na początku szukany jest węzeł który zawiera dany klucz, przeszukiwanie odbywa się za pomocą wzdłużnego przechodzenia drzewa (*pre-order*). Gdy węzeł zostanie znaleziony, pobierana jest z niego wartość jeśli istnieje. Wartość ta zostaje zwrócona. W przeciwnym wypadku, jeśli nie zostanie znaleziony węzeł spełniający wymagania, zwracane jest `None`.
+
 ### Odczyt sekwencyjny
+
+```py
+def get_range(self, key_from: int, key_to: int) -> list[T]:
+    result = []
+    for key in range(key_from, key_to + 1):
+        temp = search(self.root, key)
+        if temp is not None:
+            result += [[key, temp.values[key]]]
+    return result
+```
+*Kod reprezentujący implementację odczytywania sekwencji wartości z drzewa.*
+
+Metoda przyjmuje 2 argumenty: `key_from` oraz `key_to`, które jako liczby całkowite są skrajnymi wartościami przedziału kluczy. 
+
+Odczyt sekwencyjny odbywa się za pomocą zwykłego Odczytu, ale z dodatkiem pętli for, która odpowiada za pracę na przedziale liczbowym. Wszystkie znalezione pary umieszczane są w tymczasowej liście `result`, która niezależnie od rozmiaru, jest zwracana. 
 
 ### Aktualizacja
 
+```py
+def update(self, key: int, new_value: T) -> bool:
+    res = update(self.root, key, new_value)
+    if res is None:
+        return False
+        
+def update(root, key, new_value):
+    if root is None:
+        return root
+    if root.key_from <= key <= root.key_to:
+        if key in root.values:
+            root.values[key] = new_value
+            return root
+    if root.key_to < key:
+        return update(root.right, key, new_value)
+    return update(root.left, key, new_value)
+```
+
+*Kod reprezentujący implementację aktualizacje wartości drzewa wraz z metodą pomocniczą.*
+
+Do poprawnego działania wymagane jest podanie 2 argumentów: klucz (`key`) oraz nowa wartość (`new_value`). 
+
+Podobnie jak w przypadku operacji Odczytu, znalezienie węzła do zmiany odbywa się przez przechodzenie drzewa wzdłuż (*pre-order*). Po znalezieniu odpowiedniego węzła, sprawdzana jest obecność konkretnego klucza w węźle. Jeśli klucz znajduje się w węźle, następuje zmiana wartości na `new_value`. 
+
+W przeciwnym wypadku operacja jest przerywana i zwracana jest wartość `None`.
+
 ### Usuwanie
+
+```py
+def delete(self, key: int) -> bool:
+    res = deleteNode(self.root, key)
+    if not res[1]:
+        return False
+    self.size -= 1
+    
+def deleteNode(root, key, deleted=False):
+    if root is None:
+        return root, deleted
+    if isinstance(root, tuple):
+        r = root[0]
+    else:
+        r = root
+    if (r.key_from <= key <= r.key_to) and (len(r.values) > 0):
+        if key in r.values:
+            del r.values[key]
+            deleted = True
+            if len(r.values) == 0:
+                tmp = deleteNode(r, r.key_from)
+                if tmp is not None:
+                    r = tmp[0]
+    else:
+        if key < r.key_from:
+            tmp = deleteNode(r.left, key)
+            if tmp is not None:
+                r.left = tmp[0]
+        elif key > r.key_to:
+            tmp = deleteNode(r.right, key)
+            if tmp is not None:
+                r.right = tmp[0]
+        else:
+            if r.left is None:
+                temp = r.right
+                r = None
+                return temp, deleted
+            elif r.right is None:
+                temp = r.left
+                r = None
+                return temp, deleted
+ 
+            temp = minValueNode(r.right)
+            r.key = temp[0]
+            r.right = deleteNode(r.right, temp[0])[0]
+    return r, deleted
+```
+
+*Kod reprezentujący implementację usuwania wartości z drzewa wraz z metodą pomocniczą.*
+
+Metoda do poprawnego działania wymaga 1 argumentu, czyli klucza (`key`).
+
+Po rozpoczęciu operacji usuwania klucza z drzewa następuje wyszukiwanie odpowiedniego węzła przechowującego dany klucz.
+
+Następnie, jeżeli klucz zostanie znaleziony sprawdzane są pary w węźle, by zweryfikować obecność klucza do usunięcia. 
+
+Po poprawnej weryfikacji klucz zostaje usunięty z węzła, po czym sprawdzany jest rozmiar węzła. Jeżeli rozmiar węzła jest równy 0, następuje usunięcie węzła z drzewa, w przeciwnym wypadku zwracana jest para składająca się z głównego węzła i flagi informującej o usunięciu klucza. 
+
+Za pomocą flagi sprawdzany jest status wykonania operacji, jeśli usuwanie powiodło się to rozmiar bazy danych jest zmniejszony o 1, jeśli nie zwracana jest wartość `False`.
 
 # Metodologia badań
 
@@ -103,19 +497,19 @@ W tym rozdziale zostanie opisana obrana metodologia badań uwzględniająca posz
 
 Do badań wybrano 6 różnych operacji:
 
-- Dodawanie - do istniejącej bazy danych dodano *n* różnych nowych wartości o kolejnych wartościach indeksu, rozpoczynających się od wartości większej o `1` od największej obecnie istniejących. Pod każdy z kluczy generowano losowo dane osoby (imię, nazwisko, numer PESEL, adres mailowy, numer telefonu, wiek oraz adres).
+-   Dodawanie - do istniejącej bazy danych dodano *n* różnych nowych wartości o kolejnych wartościach indeksu, rozpoczynających się od wartości większej o `1` od największej obecnie istniejących. Pod każdy z kluczy generowano losowo dane osoby (imię, nazwisko, numer PESEL, adres mailowy, numer telefonu, wiek oraz adres).
 
-- Odczyt - do odczytu wybierano każdorazowo losową wartość ze wszystkich wartości indeksu bazy danych.
+-   Odczyt - do odczytu wybierano każdorazowo losową wartość ze wszystkich wartości indeksu bazy danych.
 
-- Odczyt sekwencyjny - do odczytu wybierano każdorazowo losową wartość początkową przedziału. Na jej podstawie każdorazowo dokonano `100` odczytów sekwencyjnych wartości kluczy. 
+-   Odczyt sekwencyjny - do odczytu wybierano każdorazowo losową wartość początkową przedziału. Na jej podstawie każdorazowo dokonano `100` odczytów sekwencyjnych wartości kluczy.
 
-- Aktualizacja - do aktualizacji wybierano każdorazowo losową wartość ze wszystkich wartości indeksu bazy danych, a następnie dokonywano ponownego generowania danych osoby.
+-   Aktualizacja - do aktualizacji wybierano każdorazowo losową wartość ze wszystkich wartości indeksu bazy danych, a następnie dokonywano ponownego generowania danych osoby.
 
-- Usuwanie - do usuwania wybrano każdorazowo losową wartość, od wartości minimalnej, do maksymalnej z bazy danych. Niektóre odczyty mogły próbować usunąć wartość nieistniejącą.
+-   Usuwanie - do usuwania wybrano każdorazowo losową wartość, od wartości minimalnej, do maksymalnej z bazy danych. Niektóre odczyty mogły próbować usunąć wartość nieistniejącą.
 
-- Połączenie operacji - operacja składająca się z łańcucha 600 operacji odczytu z całej bazy danych, `600` operacji dodania wartości o nowych indeksach wzorem operacji dodania oraz 600 operacji usunięcia dodanych przed chwilą danych.
+-   Połączenie operacji - operacja składająca się z łańcucha 600 operacji odczytu z całej bazy danych, `600` operacji dodania wartości o nowych indeksach wzorem operacji dodania oraz 600 operacji usunięcia dodanych przed chwilą danych.
 
-## Przeprowadzone badania 
+## Przeprowadzone badania
 
 W celu uzyskania miarodajnych wyników, objęto poniższą metodologie badań.
 
@@ -129,10 +523,10 @@ W celu zminimalizowania wpływu usług uruchamianych przez system w tle niezale�
 
 Środowisko do przeprowadzenia badań stanowi komputer wyposażony w:
 
-- Procesor Ryzen 5 3600
-- 16 GB pamięci DDR4 o taktowaniu 3200 MHz
-- System Windows 11 w wersji `21H2`
-- Python w wersji `3.11.1`
+-   Procesor Ryzen 5 3600
+-   16 GB pamięci DDR4 o taktowaniu 3200 MHz
+-   System Windows 11 w wersji `21H2`
+-   Python w wersji `3.11.1`
 
 W ramach przeprowadzanych badań, nie dokonywano żadnych operacji na wyżej wymienionym systemie.
 
@@ -141,27 +535,29 @@ W ramach przeprowadzanych badań, nie dokonywano żadnych operacji na wyżej wym
 W tej sekcji zawiera się wizualizacja oraz opis wyników przeprowadzonych badań.
 
 ## Dodawanie danych
+
 ```{r create}
 ggplotly(draw_chart("create", "log10"))
 ```
 
-Zauważyć można, że w procesie dodawania najwolniejsza jest baza danych oparta na liście, gdzie jej złożoność rośnie mniej-więcej liniowo. 
+Zauważyć można, że w procesie dodawania najwolniejsza jest baza danych oparta na liście, gdzie jej złożoność rośnie mniej-więcej liniowo.
 
-Następna w kolejności jak chodzi o prędkość jest baza oparta na t-drzewie dla węzła o wielkości 100, którego złożoność rożnie mniej więcej liniowo 
-W przypadku dwóch pozostałych baz opartych na t-drzewach zauważyć można, że rosną one bardzo powoli. 
+Następna w kolejności jak chodzi o prędkość jest baza oparta na t-drzewie dla węzła o wielkości 100, którego złożoność rożnie mniej więcej liniowo W przypadku dwóch pozostałych baz opartych na t-drzewach zauważyć można, że rosną one bardzo powoli.
 
 Najszybszą operację dodawania posiada baza oparta na słowniku, której to czas odczytu jest stały.
 
 ## Odczyt losowy danych
+
 ```{r read}
 ggplotly(draw_chart("read", "log10"))
 ```
 
-Operacje odczytu losowego prezentują się podobie do operacji dodawania danych. 
+Operacje odczytu losowego prezentują się podobie do operacji dodawania danych.
 
 Najwolniejszy odczyt posiada struktura listowa, następnie struktury oparte na t-drzewie, a najszybsza jest struktura oparta na słowniku, która to jest jedyna niezależna od wielkości bazy danych.
 
 ## Odczyt sekwencyjny danych
+
 ```{r read_range}
 ggplotly(draw_chart("read_range", "log10"))
 ```
@@ -173,26 +569,29 @@ Znacznie szybsze są struktury oparte na t-drzewie z węzłami o wielkościach 5
 Wszystkie struktury wykazały tutaj złożoność liniową.
 
 ## Aktualizacja danych
+
 ```{r update}
 ggplotly(draw_chart("update", "log10"))
 ```
 
 Zdecydowanie najwolniejszą strukturą do tej operacji jest lista, której to złożoność rośnie liniowo.
 
-Wszystkie pozostałe struktury wykonują tą operację znacznie szybciej. Jednak warto zauważyć, że poza listą, t-drzewo z węzłem o wielkości 100 widocznie zależy od wielkości bazy danych. 
+Wszystkie pozostałe struktury wykonują tą operację znacznie szybciej. Jednak warto zauważyć, że poza listą, t-drzewo z węzłem o wielkości 100 widocznie zależy od wielkości bazy danych.
 
 ## Usuwanie danych
+
 ```{r delete}
 ggplotly(draw_chart("delete", "log10"))
 ```
 
 Usuwanie danych z listy zajmuje najwięcej czasu i rośnie ono liniowo.
 
-Następna jest baza oparta na t-drzewie o wielkości 100, 1000 oraz 500, które rosną logarytmicznie. 
+Następna jest baza oparta na t-drzewie o wielkości 100, 1000 oraz 500, które rosną logarytmicznie.
 
 Najszybsze jest operowanie na strukturze słownika, które rośnie nieznacznie w zależności od wielkości bazy danych.
 
 ## Połączenie operacji
+
 ```{r mixture}
 ggplotly(draw_chart("mixture", "log10"))
 ```
@@ -203,5 +602,7 @@ Połączenie operacji prezentuje się analogicznie do wykresu operacji dodawania
 
 ## Podsumowanie prac i wnioski
 
-# Literatura
+# Literatura {#literature}
 
+1.  Hector Garcia-Molina, Kenneth Salem, *Main Memory Database Systems: An Overview, IEEE Transactions on Knowledge and Data Engineering Vol.4 No.6* December 1992
+2.  Tobin J. Lehman, Michael J. Carey, *A Study of Index Structures for Main Memory Database Management Systems, Computer Sciences Department*, University of Wisconsin-Madison, 25 August 1986
