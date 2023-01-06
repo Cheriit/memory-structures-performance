@@ -92,6 +92,8 @@ Celem pracy jest analiza porównawcz wybranych struktur pamięciowych, w odniesi
 
 Koncepty testów oparte zostały na propozycji zaprezentowanej w [A Study of Index Structures for Main Memory Database Management Systems](#literature).
 
+Jako hipotezę badawczą przypuszczamy największą wydajność struktur hashowych takich jak słownik dla operacji dodawania, odczytu pojedynczej wartości oraz usuwania, a także najlepszą wydajność T-Drzewa dla odczytu sekwencyjnego wartości w przedziale.
+
 # Implementacja baz danych opartych na strukturach pamięciowych
 
 W sekcji tej znajduje się informacja odnośnie sposobu implementacji każdej ze struktur. Wszystkie struktury zostały zaimplementowane w języku *Python*.
