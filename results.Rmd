@@ -24,7 +24,7 @@ library(plotly)
 draw_chart <- function(operation) {
   data <- read.csv(paste("out/", operation, ".csv", sep=""), header=FALSE, col.names=c("database", "time", "size"))
   df <- data %>%
-    mutate(database=factor(database, labels=c('Dictionary', 'List', 'T-Tree')), time=time/1000, size=size/1000) %>%
+    mutate(database=factor(database, labels=c('Dictionary', 'List', 'T-Tree100', 'T-Tree500', 'T-Tree1000')), time=time/1000, size=size/1000) %>%
     group_by(database, size) %>%
     summarize(time=mean(time), .groups='drop')
   
