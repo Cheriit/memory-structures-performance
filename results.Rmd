@@ -113,7 +113,7 @@ Do badań wybrano 6 różnych operacji:
 
 - Usuwanie - do usuwania wybrano każdorazowo losową wartość, od wartości minimalnej, do maksymalnej z bazy danych. Niektóre odczyty mogły próbować usunąć wartość nieistniejącą.
 
-- Połączenie operacji - operacja składająca się z łańcucha 100 operacji odczytu z całej bazy danych, `100` operacji dodania wartości o nowych indeksach wzorem operacji dodania oraz 100 operacji usunięcia dodanych przed chwilą danych.
+- Połączenie operacji - operacja składająca się z łańcucha 600 operacji odczytu z całej bazy danych, `600` operacji dodania wartości o nowych indeksach wzorem operacji dodania oraz 600 operacji usunięcia dodanych przed chwilą danych.
 
 ## Przeprowadzone badania 
 

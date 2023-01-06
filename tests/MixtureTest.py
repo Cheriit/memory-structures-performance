@@ -30,8 +30,7 @@ class MixtureTest(Test):
         query_mix(database, 18000, 6000)
         query_mix(database, 12000, 9000)'''
         query_mix(database, 300)
-        query_mix(database, 600)
-        query_mix(database, 900)
+        query_mix(database, 300)
 
     def __str__(self):
         return "mixture"
