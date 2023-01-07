@@ -612,7 +612,25 @@ ggplotly(draw_chart("mixture", "log10"))
 
 Połączenie operacji prezentuje się analogicznie do wykresu operacji dodawania, gdzie operowanie na liście zajmuje najdłużej, następnie jest operowanie na T-Drzewie o węźle z wielkością 100, 1000, 500 oraz na słowniku.
 
-# Zakończenie
+# Zakończenie i wnioski
+
+Wyniki zaprezentowane w poprzedniej sekcji umożliwiają wyciągnięcie następujących wniosków.
+
+W większości testów (w szczególności scenariuszach jak dodawanie, czy aktualizacja) widać główne wady listy, z uwagę na potrzebę przeszukiwania struktury. Sam początkowy czas niezbędny do wykonywania operacji jest stosunkowo wysoki względem pozostałych struktur.
+
+Struktura słownika prezentuje się najlepiej pod względem wydajności dla wszystkich operacji poza odczytem sekwencyjnym. Wynika to z tego, że jest ona oparta na stałym czasie dostępu poprzed obliczanie lokalizacji na podstawie podanego klucza, jako struktura hashowa.
+
+T-Drzewo w istotnym stopniu zależy od wielkości bazy danych, z uwagi na to, że jest to struktura drzewiasta. Operacje takie dodawanie czy usuwanie posiadają narzut czasu który wynika z potrzeby balansowania struktury, a jedynym narzutem czasu dla odczytu i aktualizacji jest samo schodzenie niżej w strukturze bazy danych. Czyni to operacje odczytu niezwykle efektywną. 
+
+Dla odczytu sekwencyjnego widać zbliżone wyniki dla listy, słownika i t-drzewa w wariancie 100-węzłowym. Fakt znalezienia się w tym gronie słownika tłumaczy to, że w tym przypadku generalna zaleta polegająca na przeszukiwaniu struktury zostaje zniwelowana z uwagi na charakter operacji, w której ułożone kolejno po sobie dane faworyzują struktury takie jak lista, czy T-Drzewo, których to kolejne dane są łatwo dostępne oraz ułożone obok siebie w pamięci.
+
+Z używanych wariantów T-Drzew widać znaczące różnice, zwłaszcza między wariantem 100-węzłowym, resztą. Wynika to głównie z wielkości węzłów na poziom, powodujące częste potrzeby tworzenia nowych poziomów, a w wyniku ciągłego kopiowania danych i samych operacji na strukturze, wysoki czas operacji. 
+
+Ciekawą zależność można natomiast zaobserwować między wersją 500 i 1000 węzłową. Przypuszczalnie powodem takiego stanu rzeczy jest problem z odpowiednim wyważeniem przypadających węzłów, co może być tematem przyszłych badań. 
+
+W przypadku bazy danych o wielkości 100,000 elementów, przy węźle o rozmiarze 1000, w dużej mierze przegląd elementów zaczyna momentami przypominać przegląd listy o stałej długości 1000. Czym większy jest węzeł, tym dłużej zajmuje jego przegląd, natomiast podowuje on zmniejszenie samej struktury T-Drzewa poprzez zmniejszenie liczby węzłów. Dodatkowo zmniejsza się częstość równoważenia drzewa, gdyż potrzebujemy dodać więcej elementów, żeby być zmuszeni na dodanie kolejnego węzła. 
+
+Dane uzyskane w ramach eksperymentu popierają hipotezę badawczą, gdzie faktycznie najszybszy odczyt, zapis pojedynczych wartości oraz usuwanie jest najszybsze w strukturach hash’owych takich jak słownik, a odczyt w przedziale najszybszy jest w T-Drzewie.
 
 # Literatura {#literature}
 
