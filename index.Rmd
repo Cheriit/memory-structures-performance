@@ -72,12 +72,11 @@ Do przeprowadzonych eksperymentów wybrane zostały następujące struktury:
 
 -   Lista,
 -   Słownik,
--   T-Drzewa w wariantach:
-    -   100 węzłów,
-    -   500 węzłów,
-    -   1000 węzłów.
+-   T-Drzewa;
 
 Struktury dobrane zostały na względ na swoją różnorodność i chęć sprawdzenia w praktyce różnych podejść do operowania na danych.
+
+Dokładny opis wybranych struktur znajduje się w [rozdziale 2.](#structures)
 
 ## Cel pracy
 
@@ -94,7 +93,7 @@ Koncepty testów oparte zostały na propozycji zaprezentowanej w [A Study of Ind
 
 Jako hipotezę badawczą przypuszczamy największą wydajność struktur hashowych takich jak słownik dla operacji dodawania, odczytu pojedynczej wartości oraz usuwania, a także najlepszą wydajność T-Drzewa dla odczytu sekwencyjnego wartości w przedziale.
 
-# Implementacja baz danych opartych na strukturach pamięciowych
+# Implementacja baz danych opartych na strukturach pamięciowych {#structures}
 
 W sekcji tej znajduje się informacja odnośnie sposobu implementacji każdej ze struktur. Wszystkie struktury zostały zaimplementowane w języku *Python*.
 
@@ -503,7 +502,7 @@ Po poprawnej weryfikacji klucz zostaje usunięty z węzła, po czym sprawdzany j
 
 Za pomocą flagi sprawdzany jest status wykonania operacji, jeśli usuwanie powiodło się to rozmiar bazy danych jest zmniejszony o 1, jeśli nie zwracana jest wartość `False`.
 
-# Metodologia badań
+# Metodyka badań
 
 W tym rozdziale zostanie opisana obrana metodologia badań uwzględniająca poszczególne operacje, środowisko oraz sposób przeprowadzenia badań.
 
@@ -612,7 +611,7 @@ ggplotly(draw_chart("mixture", "log10"))
 
 Połączenie operacji prezentuje się analogicznie do wykresu operacji dodawania, gdzie operowanie na liście zajmuje najdłużej, następnie jest operowanie na T-Drzewie o węźle z wielkością 100, 1000, 500 oraz na słowniku.
 
-# Zakończenie i wnioski
+# Podsumowanie
 
 Wyniki zaprezentowane w poprzedniej sekcji umożliwiają wyciągnięcie następujących wniosków.
 
